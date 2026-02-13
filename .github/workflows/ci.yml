@@ -26,13 +26,13 @@ jobs:
           pip install black ruff mypy
       
       - name: Check code formatting with Black
-        run: black --check esp_debug tests
+        run: black --check serialscope tests
       
       - name: Lint with Ruff
-        run: ruff check esp_debug tests
+        run: ruff check serialscope tests
       
       - name: Type check with mypy
-        run: mypy esp_debug --ignore-missing-imports || true
+        run: mypy serialscope --ignore-missing-imports || true
 
   test:
     name: Test (Python ${{ matrix.python-version }})
@@ -58,7 +58,7 @@ jobs:
       
       - name: Run tests
         run: |
-          pytest --cov=esp_debug --cov-report=xml --cov-report=term-missing
+          PYTHONPATH="" pytest --cov=serialscope --cov-report=xml --cov-report=term-missing
       
       - name: Upload coverage
         uses: codecov/codecov-action@v3
@@ -89,4 +89,4 @@ jobs:
         run: safety check --json || true
       
       - name: Security scan with Bandit
-        run: bandit -r esp_debug -f json -o bandit-report.json || true
+        run: bandit -r serialscope -f json -o bandit-report.json || true

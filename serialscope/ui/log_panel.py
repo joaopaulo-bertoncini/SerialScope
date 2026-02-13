@@ -56,6 +56,7 @@ class LogPanel(ScrollableContainer):
         self.logs: Deque[Event] = deque(maxlen=max_lines)
         self.console = Console()
         self._auto_scroll = True  # Auto-scroll to bottom by default
+        self._content: Optional[Static] = None  # Will be set in on_mount
 
     def add_event(self, event: Event) -> None:
         """
@@ -103,7 +104,8 @@ class LogPanel(ScrollableContainer):
 
     def _update_display(self) -> None:
         """Update the displayed log content."""
-        if self._content is None:
+        # If content widget is not yet mounted, skip update
+        if not hasattr(self, '_content') or self._content is None:
             return
             
         if not self.logs:
@@ -115,9 +117,12 @@ class LogPanel(ScrollableContainer):
             line = self._format_event(event)
             lines.append(line)
 
-        # Update content
+        # Update content - use Rich Text for proper markup rendering
+        from rich.text import Text as RichText
         content_text = "\n".join(lines)
-        self._content.update(content_text)
+        # Convert Rich markup string to Rich Text object for proper rendering
+        rich_content = RichText.from_markup(content_text) if content_text else RichText("")
+        self._content.update(rich_content)
         
         # Auto-scroll to bottom if enabled
         if self._auto_scroll:

@@ -8,6 +8,12 @@
 
 SerialScope is a professional-grade serial debugging and telemetry framework for embedded systems (ESP32, STM32, RP2040, etc.). It goes beyond simple serial monitors by providing structured logging, real-time telemetry dashboards, packet decoding, plugin architecture, recording & replay, and live plotting.
 
+## 📸 Screenshots
+
+![SerialScope Dashboard](docs/Screenshot1.png)
+
+![SerialScope Log View](docs/Screenshot2.png)
+
 ## 🎯 Features
 
 - **Structured Logging**: Parse plain text, JSON, or binary data into unified events
@@ -53,18 +59,12 @@ SerialScope is a professional-grade serial debugging and telemetry framework for
 ### From Source
 
 ```bash
-git clone https://github.com/yourusername/serialscope.git
+git clone https://github.com/joaopaulo-bertoncini/serialscope.git
 cd serialscope
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 pip install -e .
-```
-
-### Using Docker
-
-```bash
-docker-compose up
 ```
 
 ## 🚀 Quick Start
@@ -200,30 +200,6 @@ pytest --cov=serialscope --cov-report=html
 pytest tests/unit/test_event.py
 ```
 
-## 🐳 Docker
-
-### Build Image
-
-```bash
-docker build -t serialscope:latest .
-```
-
-### Run Container
-
-```bash
-docker run --privileged -v $(pwd)/sessions:/app/sessions \
-  -e PORT=/dev/ttyUSB0 \
-  serialscope:latest --port auto --record
-```
-
-### Docker Compose
-
-```bash
-docker-compose up
-```
-
-**Note**: Serial port access requires privileged mode or device mapping in Docker.
-
 ## 🏛 Project Structure
 
 ```
@@ -261,7 +237,7 @@ tests/
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/serialscope.git
+git clone https://github.com/joaopaulo-bertoncini/serialscope.git
 cd serialscope
 
 # Create virtual environment
@@ -288,14 +264,6 @@ ruff check serialscope tests
 # Type check
 mypy serialscope
 ```
-
-### CI/CD
-
-The project includes GitHub Actions workflows for:
-- Linting and formatting checks
-- Unit tests across Python 3.10, 3.11, 3.12
-- Security scanning (Safety, Bandit)
-- Coverage reporting
 
 ## 📊 Supported Data Formats
 
@@ -331,17 +299,6 @@ The dashboard provides:
   - `c`: Clear logs
   - `t`: Toggle timestamps
   - `f`: Filter menu
-
-## 🔮 Future Features
-
-- [ ] Web dashboard (FastAPI + WebSocket)
-- [ ] Remote TCP bridge
-- [ ] MQTT bridge
-- [ ] Prometheus exporter
-- [ ] AI-based anomaly detection
-- [ ] Multi-device comparison mode
-- [ ] USB hot-plug detection
-- [ ] Live plotting with matplotlib
 
 ## 🤝 Contributing
 

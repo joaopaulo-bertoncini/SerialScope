@@ -19,7 +19,7 @@ class TestSerialIntegration:
     def test_parser_with_serial_data(self):
         """Test parser with simulated serial data."""
         parser = StreamParser(mode=ParserMode.PLAIN_TEXT)
-        
+
         # Simulate serial data stream
         chunks = [
             b"[INFO] Starting",
@@ -28,12 +28,12 @@ class TestSerialIntegration:
             b"[ERROR] Sensor",
             b" timeout\n",
         ]
-        
+
         all_events = []
         for chunk in chunks:
             events = list(parser.parse(chunk))
             all_events.extend(events)
-        
+
         # Should have 3 complete events
         assert len(all_events) == 3
         assert all_events[0].level == LogLevel.INFO

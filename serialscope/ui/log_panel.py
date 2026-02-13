@@ -105,9 +105,9 @@ class LogPanel(ScrollableContainer):
     def _update_display(self) -> None:
         """Update the displayed log content."""
         # If content widget is not yet mounted, skip update
-        if not hasattr(self, '_content') or self._content is None:
+        if not hasattr(self, "_content") or self._content is None:
             return
-            
+
         if not self.logs:
             self._content.update("")
             return
@@ -119,11 +119,12 @@ class LogPanel(ScrollableContainer):
 
         # Update content - use Rich Text for proper markup rendering
         from rich.text import Text as RichText
+
         content_text = "\n".join(lines)
         # Convert Rich markup string to Rich Text object for proper rendering
         rich_content = RichText.from_markup(content_text) if content_text else RichText("")
         self._content.update(rich_content)
-        
+
         # Auto-scroll to bottom if enabled
         if self._auto_scroll:
             self.scroll_end(animate=False)

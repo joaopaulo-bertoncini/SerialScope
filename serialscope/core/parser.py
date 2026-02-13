@@ -87,7 +87,7 @@ class StreamParser:
         try:
             # Try to decode as UTF-8
             text = self.buffer.decode("utf-8", errors="strict")
-            
+
             # Check if it looks like JSON
             if text.strip().startswith("{") or text.strip().startswith("["):
                 # Try to parse as JSON
@@ -107,7 +107,9 @@ class StreamParser:
 
             # Check if it contains printable ASCII/text characters
             # If most bytes are printable, it's likely text
-            printable_count = sum(1 for b in self.buffer[:100] if 32 <= b <= 126 or b in (9, 10, 13))
+            printable_count = sum(
+                1 for b in self.buffer[:100] if 32 <= b <= 126 or b in (9, 10, 13)
+            )
             if printable_count > len(self.buffer[:100]) * 0.8:  # 80% printable
                 self.detected_mode = ParserMode.PLAIN_TEXT
                 logger.info("Auto-detected plain text mode (high printable ratio)")
@@ -116,12 +118,14 @@ class StreamParser:
             # Default to plain text for safety
             self.detected_mode = ParserMode.PLAIN_TEXT
             logger.info("Auto-detected plain text mode (default)")
-            
+
         except UnicodeDecodeError:
             # Check if it might still be text with errors
             text_with_errors = self.buffer.decode("utf-8", errors="replace")
-            printable_count = sum(1 for b in self.buffer[:100] if 32 <= b <= 126 or b in (9, 10, 13))
-            
+            printable_count = sum(
+                1 for b in self.buffer[:100] if 32 <= b <= 126 or b in (9, 10, 13)
+            )
+
             if printable_count > len(self.buffer[:100]) * 0.5:  # 50% printable
                 self.detected_mode = ParserMode.PLAIN_TEXT
                 logger.info("Auto-detected plain text mode (with decode errors)")
@@ -181,7 +185,9 @@ class StreamParser:
                             except ValueError:
                                 pass
                         # Check for numeric values (likely metrics)
-                        if any(isinstance(v, (int, float)) for v in json_data.values() if v != "type"):
+                        if any(
+                            isinstance(v, (int, float)) for v in json_data.values() if v != "type"
+                        ):
                             if event_type == EventType.LOG:
                                 event_type = EventType.METRIC
                         # Extract level if present
@@ -191,7 +197,7 @@ class StreamParser:
                                 level = LogLevel(json_data["level"].upper())
                             except ValueError:
                                 pass
-                    
+
                     yield Event(
                         type=event_type,
                         level=level,
@@ -278,8 +284,12 @@ class StreamParser:
         """
         # Check if buffer looks like text (safety check)
         if len(self.buffer) > 0:
-            printable_count = sum(1 for b in self.buffer[:min(100, len(self.buffer))] if 32 <= b <= 126 or b in (9, 10, 13))
-            if printable_count > len(self.buffer[:min(100, len(self.buffer))]) * 0.7:
+            printable_count = sum(
+                1
+                for b in self.buffer[: min(100, len(self.buffer))]
+                if 32 <= b <= 126 or b in (9, 10, 13)
+            )
+            if printable_count > len(self.buffer[: min(100, len(self.buffer))]) * 0.7:
                 # Looks like text, switch to plain text mode
                 logger.warning("Binary parser detected text data, switching to plain text mode")
                 self.detected_mode = ParserMode.PLAIN_TEXT
@@ -291,13 +301,15 @@ class StreamParser:
         while len(self.buffer) >= 2:
             # Assume first byte is length
             packet_len = self.buffer[0]
-            
+
             # Validate packet length (reasonable range)
             if packet_len == 0 or packet_len > 200:  # Reduced max to avoid false positives
                 # Check if this might be text starting with a character
                 if 32 <= self.buffer[0] <= 126:  # Printable ASCII
                     # Likely text, switch modes
-                    logger.warning("Binary parser detected text-like data, switching to plain text mode")
+                    logger.warning(
+                        "Binary parser detected text-like data, switching to plain text mode"
+                    )
                     self.detected_mode = ParserMode.PLAIN_TEXT
                     yield from self._parse_plain_text()
                     return
